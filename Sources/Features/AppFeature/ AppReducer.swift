@@ -86,7 +86,15 @@ public struct AppView: View {
       }
     }
     .navigationTitle("Recipes")
-    .toolbar { toolbar }
+    .toolbar {
+      ToolbarItem(placement: .navigation) {
+        Button {
+          send(.sidebarButtonTapped)
+        } label: {
+          Image(systemName: "sidebar.leading")
+        }
+      }
+    }
   }
   
   @MainActor private var detail: some View {
@@ -100,25 +108,27 @@ public struct AppView: View {
         EmptyView()
       }
     }
-  }
-  
-  @MainActor private var toolbar: some ToolbarContent {
-    ToolbarItem(placement: .navigationBarLeading) {
-      Button {
-        send(.sidebarButtonTapped)
-      } label: {
-        Image(systemName: "sidebar.leading")
+    .toolbar {
+      if store.navigationSplitViewVisibility != .all {
+        ToolbarItem(placement: .navigation) {
+          Button {
+            send(.sidebarButtonTapped)
+          } label: {
+            Image(systemName: "sidebar.trailing")
+          }
+        }
       }
     }
   }
 }
-  
-  // MARK: - SwiftUI Previews
-  
-  #Preview {
-    Preview {
-      AppView(store: Store(initialState: AppReducer.State()) {
-        AppReducer()
-      })
-    }
+
+
+// MARK: - SwiftUI Previews
+
+#Preview {
+  Preview {
+    AppView(store: Store(initialState: AppReducer.State()) {
+      AppReducer()
+    })
   }
+}

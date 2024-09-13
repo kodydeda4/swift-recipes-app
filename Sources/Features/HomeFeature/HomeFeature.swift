@@ -138,7 +138,7 @@ public struct HomeView: View {
             }
           }
           if !store.rows.isEmpty {
-            Section("Categories") {
+            Section {
               LazyVGrid(columns: .init(repeating: .init(.flexible()), count: 4)) {
                 ForEach(store.rows, content: rowView)
               }
@@ -184,6 +184,7 @@ public struct HomeView: View {
       .padding()
       .frame(maxWidth: .infinity, maxHeight: .infinity)
     }
+    .buttonStyle(.plain)
   }
 }
 
@@ -196,11 +197,12 @@ struct PreviewView: View {
   
   var body: some View {
     Preview {
-      NavigationSplitView {
-        Text("Preview")
-      } detail: {
-        HomeView(store: store).onAppear {
-          store.send(.view(.mealCategoryButtonTapped(.previewValue)))
+      HomeView(store: store).onAppear {
+        store.send(.view(.mealCategoryButtonTapped(.previewValue)))
+      }
+      .toolbar {
+        Button(action: {}) {
+          Image(systemName: "sidebar.trailing")
         }
       }
     }
