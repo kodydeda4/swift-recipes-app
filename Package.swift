@@ -11,7 +11,7 @@ let package = Package(
   products: [
     // Dependencies
     .library(name: "ApiClient"),
-    
+
     // Features
     .library(name: "AppReducer"),
     .library(name: "MealDetails"),
@@ -34,7 +34,7 @@ let package = Package(
   targets: [
     // Dependencies
     .dependency("ApiClient"),
-    
+
     // Features
     .feature("AppReducer", dependencies: [
       "ApiClient",
@@ -70,7 +70,7 @@ let package = Package(
 // MARK: - Helpers
 
 extension Product {
-  
+
   /// Create a library with identical name & target.
   static func library(name: String) -> Product {
     .library(name: name, targets: [name])
@@ -78,7 +78,7 @@ extension Product {
 }
 
 extension Target {
-  
+
   /// Create a target with the default path & dependencies for a feature.
   static func feature(_ name: String, dependencies: [Target.Dependency] = []) -> Target {
     .target(
@@ -93,7 +93,7 @@ extension Target {
       path: "Sources/Features/\(name)"
     )
   }
-  
+
   /// Create a target with the default path & dependencies for a dependency.
   static func dependency(_ name: String, dependencies: [Target.Dependency] = []) -> Target {
     .target(
@@ -106,7 +106,7 @@ extension Target {
       path: "Sources/DependencyClients/\(name)"
     )
   }
-  
+
   /// Create a target with the default path & dependencies for a library.
   static func library(
     _ name: String,

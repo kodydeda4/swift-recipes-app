@@ -81,7 +81,9 @@ public struct MealList {
           state.inFlight = true
           return .run { [category = state.category] send in
             await send(.fetchMealsResponse(Result {
-              try await self.api.fetchAllMeals(category)
+              struct Response: Codable { let meals: [ApiClient.Meal] }
+              let response: Response = try await api.request(.fetchAllMeals(category: category))
+              return response.meals
             }))
           }
           
@@ -89,7 +91,9 @@ public struct MealList {
           state.rows[id: id]?.inFlight = true
           return .run { send in
             await send(.fetchMealDetailsResponse(id, Result {
-              try await self.api.fetchMealDetailsById(id)
+              struct Response: Codable { let meals: [ApiClient.MealDetails] }
+              let response: Response = try await api.request(.fetchAllMealDetailsBy(by: id))
+              return response.meals
             }))
           }
         }

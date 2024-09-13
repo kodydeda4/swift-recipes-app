@@ -36,7 +36,11 @@ public struct AppReducer {
       case .view(.onAppear):
         return .run { send in
           await send(.fetchAllMealCategoriesResponse(Result {
-            try await self.api.fetchAllMealCategories()
+            struct Response: Codable {
+              let categories: [ApiClient.MealCategory]
+            }
+            let response: Response = try await self.api.request(.fetchAllMealCategories())
+            return response.categories
           }))
         }
         

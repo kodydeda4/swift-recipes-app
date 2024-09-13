@@ -1,7 +1,7 @@
-import SwiftUI
+import AppReducer
 import ComposableArchitecture
 import DesignSystem
-import AppReducer
+import SwiftUI
 
 @main
 struct RecipesApp: App {
