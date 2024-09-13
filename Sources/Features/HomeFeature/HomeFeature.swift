@@ -14,13 +14,13 @@ public struct Home {
     var rows = IdentifiedArrayOf<Row>()
     var inFlight = false
     var error: String?
-
+    
     struct Row: Identifiable, Equatable {
       var id: ApiClient.Meal.ID { meal.id }
       let meal: ApiClient.Meal
       var inFlight = false
     }
-
+    
     public init() {}
   }
   
@@ -67,7 +67,7 @@ public struct Home {
           state.mealCategories = .init(uniqueElements: value)
         }
         return .none
-
+        
       case let .view(action):
         switch action {
           
@@ -80,7 +80,7 @@ public struct Home {
               return response.categories
             }))
           }
-
+          
         case let .navigateToMealDetails(id):
           state.rows[id: id]?.inFlight = true
           return .run { send in
@@ -171,9 +171,9 @@ public struct HomeView: View {
     Button {
       send(.navigateToMealDetails(id: value.id))
     } label: {
-      HStack {
+      VStack(alignment: .leading) {
         AsyncImage(url: URL(string: value.meal.strMealThumb)) {
-          $0.resizable().scaledToFit()
+          $0.resizable().scaledToFit().frame(height: 50)
         } placeholder: {
           ProgressView()
         }
@@ -181,20 +181,32 @@ public struct HomeView: View {
         Text(value.meal.strMeal)
           .frame(maxWidth: .infinity, maxHeight: .infinity)
       }
+      .padding()
+      .frame(maxWidth: .infinity, maxHeight: .infinity)
     }
   }
 }
 
 // MARK: - SwiftUI Previews
 
-#Preview {
-  Preview {
-    NavigationSplitView {
-      Text("Preview")
-    } detail: {
-      HomeView(store: Store(initialState: Home.State()) {
-        Home()
-      })
+struct PreviewView: View {
+  @Bindable var store = Store(initialState: Home.State()) {
+    Home()
+  }
+  
+  var body: some View {
+    Preview {
+      NavigationSplitView {
+        Text("Preview")
+      } detail: {
+        HomeView(store: store).onAppear {
+          store.send(.view(.mealCategoryButtonTapped(.previewValue)))
+        }
+      }
     }
   }
+}
+
+#Preview {
+  PreviewView()
 }
