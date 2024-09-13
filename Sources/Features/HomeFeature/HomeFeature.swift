@@ -28,7 +28,6 @@ public struct Home {
     case view(View)
     case destination(PresentationAction<Destination.Action>)
     case fetchAllMealCategoriesResponse(Result<[ApiClient.MealCategory], Error>)
-    case fetchMeals(ApiClient.MealCategory)
     case fetchMealsResponse(Result<[ApiClient.Meal], Error>)
     case fetchMealDetailsResponse(ApiClient.Meal.ID, Result<[ApiClient.MealDetails], Error>)
     
@@ -49,53 +48,25 @@ public struct Home {
         
       case let .fetchMealsResponse(result):
         state.inFlight = false
-        switch result {
-          
-        case let .success(value):
+        if case let .success(value) = result {
           state.rows = IdentifiedArrayOf(uniqueElements: value.map { State.Row(meal: $0) })
-          return .none
-          
-        case let .failure(error):
-          state.error = error.localizedDescription
-          return .none
         }
+        return .none
         
       case let .fetchMealDetailsResponse(id, result):
         state.rows[id: id]?.inFlight = false
-        
-        switch result {
-          
-        case let .success(value):
+        if case let .success(value) = result {
           if let first = value.first {
             state.destination = .mealDetails(MealDetails.State(meal: first))
           }
-          return .none
-          
-        case let .failure(error):
-          state.error = error.localizedDescription
-          return .none
         }
+        return .none
         
-      case let .fetchAllMealCategoriesResponse(response):
-        switch response {
-          
-        case let .success(value):
+      case let .fetchAllMealCategoriesResponse(result):
+        if case let .success(value) = result {
           state.mealCategories = .init(uniqueElements: value)
-          return .none
-          
-        case let .failure(error):
-          state.error = error.localizedDescription
-          return .none
         }
-        
-      case let .fetchMeals(mealCategory):
-        return .run { send in
-          await send(.fetchMealsResponse(Result {
-            struct Response: Codable { let meals: [ApiClient.Meal] }
-            let response: Response = try await api.request(.fetchAllMeals(category: mealCategory))
-            return response.meals
-          }))
-        }
+        return .none
 
       case let .view(action):
         switch action {
@@ -120,9 +91,15 @@ public struct Home {
             }))
           }
           
-        case let .mealCategoryButtonTapped(value):
-          state.mealCategory = value
-          return .send(.fetchMeals(value))
+        case let .mealCategoryButtonTapped(category):
+          state.mealCategory = category
+          return .run { send in
+            await send(.fetchMealsResponse(Result {
+              struct Response: Codable { let meals: [ApiClient.Meal] }
+              let response: Response = try await api.request(.fetchAllMeals(in: category))
+              return response.meals
+            }))
+          }
         }
         
       default:
@@ -152,11 +129,16 @@ public struct HomeView: View {
     NavigationStack {
       ScrollView {
         Section("Categories") {
-          mealCategoriesView.padding(.horizontal)
+          LazyVGrid(columns: .init(repeating: .init(.flexible()), count: 8)) {
+            ForEach(store.mealCategories, content: mealCategoryView)
+          }
+          .padding(.horizontal)
         }
         if !store.rows.isEmpty {
           Section("Categories") {
-            mealsView
+            LazyVGrid(columns: .init(repeating: .init(.flexible()), count: 4)) {
+              ForEach(store.rows, content: rowView)
+            }
           }
         }
       }
@@ -171,29 +153,21 @@ public struct HomeView: View {
     }
   }
   
-  @MainActor private var mealCategoriesView: some View {
-    LazyVGrid(columns: .init(repeating: .init(.flexible()), count: 4)) {
-      ForEach(store.mealCategories) { value in
-        Button {
-          send(.mealCategoryButtonTapped(value))
-        } label: {
-          Text(value.strCategory)
-            .frame(maxWidth: .infinity, maxHeight: .infinity)
-        }
-      }
+  @MainActor private func mealCategoryView(value: ApiClient.MealCategory) -> some View {
+    Button {
+      send(.mealCategoryButtonTapped(value))
+    } label: {
+      Text(value.strCategory)
+        .frame(maxWidth: .infinity, maxHeight: .infinity)
     }
   }
   
-  @MainActor private var mealsView: some View {
-    LazyVGrid(columns: .init(repeating: .init(.flexible()), count: 4)) {
-      ForEach(store.rows) { value in
-        Button {
-          send(.navigateToMealDetails(id: value.id))
-        } label: {
-          Text(value.meal.strMeal)
-            .frame(maxWidth: .infinity, maxHeight: .infinity)
-        }
-      }
+  @MainActor private func rowView(value: Home.State.Row) -> some View {
+    Button {
+      send(.navigateToMealDetails(id: value.id))
+    } label: {
+      Text(value.meal.strMeal)
+        .frame(maxWidth: .infinity, maxHeight: .infinity)
     }
   }
 }
@@ -202,8 +176,12 @@ public struct HomeView: View {
 
 #Preview {
   Preview {
-    HomeView(store: Store(initialState: Home.State()) {
-      Home()
-    })
+    NavigationSplitView {
+      Text("Preview")
+    } detail: {
+      HomeView(store: Store(initialState: Home.State()) {
+        Home()
+      })
+    }
   }
 }
