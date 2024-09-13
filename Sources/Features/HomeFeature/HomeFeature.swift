@@ -128,19 +128,24 @@ public struct HomeView: View {
   public var body: some View {
     NavigationStack {
       ScrollView {
-        Section("Categories") {
-          LazyVGrid(columns: .init(repeating: .init(.flexible()), count: 8)) {
-            ForEach(store.mealCategories, content: mealCategoryView)
+        VStack {
+          Section {
+            ScrollView(.horizontal) {
+              HStack {
+                ForEach(store.mealCategories, content: mealCategoryView)
+              }
+              .padding(.bottom, 32)
+            }
           }
-          .padding(.horizontal)
-        }
-        if !store.rows.isEmpty {
-          Section("Categories") {
-            LazyVGrid(columns: .init(repeating: .init(.flexible()), count: 4)) {
-              ForEach(store.rows, content: rowView)
+          if !store.rows.isEmpty {
+            Section("Categories") {
+              LazyVGrid(columns: .init(repeating: .init(.flexible()), count: 4)) {
+                ForEach(store.rows, content: rowView)
+              }
             }
           }
         }
+        .padding(.horizontal, 24)
       }
       .onAppear { send(.onAppear) }
       .navigationTitle("Home")
@@ -166,8 +171,16 @@ public struct HomeView: View {
     Button {
       send(.navigateToMealDetails(id: value.id))
     } label: {
-      Text(value.meal.strMeal)
-        .frame(maxWidth: .infinity, maxHeight: .infinity)
+      HStack {
+        AsyncImage(url: URL(string: value.meal.strMealThumb)) {
+          $0.resizable().scaledToFit()
+        } placeholder: {
+          ProgressView()
+        }
+        
+        Text(value.meal.strMeal)
+          .frame(maxWidth: .infinity, maxHeight: .infinity)
+      }
     }
   }
 }
