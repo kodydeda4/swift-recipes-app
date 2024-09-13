@@ -55,7 +55,7 @@ public struct Home {
         
       case let .fetchMealDetailsResponse(id, result):
         state.rows[id: id]?.inFlight = false
-        if let .success(value) = result {
+        if case let .success(value) = result {
           state.destination = value.first.flatMap {
             .mealDetails(MealDetails.State(meal: $0))
           }
