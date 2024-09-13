@@ -55,9 +55,9 @@ public struct Home {
         
       case let .fetchMealDetailsResponse(id, result):
         state.rows[id: id]?.inFlight = false
-        if case let .success(value) = result {
-          if let first = value.first {
-            state.destination = .mealDetails(MealDetails.State(meal: first))
+        if let .success(value) = result {
+          state.destination = value.first.flatMap {
+            .mealDetails(MealDetails.State(meal: $0))
           }
         }
         return .none
@@ -127,25 +127,26 @@ public struct HomeView: View {
   
   public var body: some View {
     NavigationStack {
-      ScrollView {
-        VStack {
-          Section {
-            ScrollView(.horizontal) {
-              HStack {
-                ForEach(store.mealCategories, content: mealCategoryView)
-              }
-              .padding(.bottom, 32)
+      VStack(spacing: 0) {
+        Section {
+          ScrollView(.horizontal, showsIndicators: false) {
+            HStack {
+              ForEach(store.mealCategories, content: mealCategoryView)
             }
+            .padding([.leading, .vertical])
           }
-          if !store.rows.isEmpty {
-            Section {
-              LazyVGrid(columns: .init(repeating: .init(.flexible()), count: 4)) {
+        }
+
+        if !store.rows.isEmpty {
+          Section {
+            ScrollView(showsIndicators: false) {
+              LazyVGrid(columns: .init(repeating: .init(.flexible()), count: 6)) {
                 ForEach(store.rows, content: rowView)
               }
             }
+            .padding([.horizontal, .top])
           }
         }
-        .padding(.horizontal, 24)
       }
       .onAppear { send(.onAppear) }
       .navigationTitle("Home")
@@ -163,7 +164,7 @@ public struct HomeView: View {
       send(.mealCategoryButtonTapped(value))
     } label: {
       Text(value.strCategory)
-        .frame(maxWidth: .infinity, maxHeight: .infinity)
+        .frame(maxWidth: .infinity)
     }
   }
   
@@ -173,18 +174,20 @@ public struct HomeView: View {
     } label: {
       VStack(alignment: .leading) {
         AsyncImage(url: URL(string: value.meal.strMealThumb)) {
-          $0.resizable().scaledToFit().frame(height: 50)
+          $0.resizable().scaledToFit().frame(height: 100)
         } placeholder: {
           ProgressView()
         }
         
         Text(value.meal.strMeal)
+          .multilineTextAlignment(.center)
+          .lineLimit(1)
           .frame(maxWidth: .infinity, maxHeight: .infinity)
       }
       .padding()
       .frame(maxWidth: .infinity, maxHeight: .infinity)
     }
-    .buttonStyle(.plain)
+//    .buttonStyle(.plain)
   }
 }
 
@@ -199,11 +202,6 @@ struct PreviewView: View {
     Preview {
       HomeView(store: store).onAppear {
         store.send(.view(.mealCategoryButtonTapped(.previewValue)))
-      }
-      .toolbar {
-        Button(action: {}) {
-          Image(systemName: "sidebar.trailing")
-        }
       }
     }
   }

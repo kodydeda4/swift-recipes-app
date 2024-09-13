@@ -2,7 +2,7 @@ import Foundation
 
 public struct ServerRoute {
   public let url: String
-  
+
   public static func fetchAllMealCategories() -> Self {
     Self(url: "https://www.themealdb.com/api/json/v1/1/categories.php")
   }
