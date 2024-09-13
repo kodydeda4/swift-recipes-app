@@ -31,7 +31,6 @@ public struct RoundedRectangleButtonStyle: ButtonStyle {
         configuration.label
       }
     }
-    .appFont(.body, .semibold)
     .foregroundColor(foregroundColor)
     .frame(height: 8*3)
     .padding(.vertical, 12)

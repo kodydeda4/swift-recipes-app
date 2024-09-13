@@ -12,16 +12,7 @@ public struct Preview<Content:View>: View {
     Group {
       content()
     }
-    .accentColor(.prRed)
-    .registerFonts()
-  }
-}
-
-private extension View {
-  /// Attach this to any Xcode Preview's view to have custom fonts displayed.
-  func registerFonts() -> some View {
-    DesignSystem.registerFonts()
-    return self
+    .accentColor(.appRed)
   }
 }
 
@@ -29,7 +20,6 @@ private extension View {
   Preview {
     NavigationStack {
       Text("Hello World!")
-        .appFont(.body)
         .foregroundColor(.accentColor)
     }
   }

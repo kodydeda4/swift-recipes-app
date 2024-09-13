@@ -33,6 +33,7 @@ public struct MealList {
     
     public enum View {
       case task
+      case cancelButtonTapped
       case navigateToMealDetails(id: ApiClient.Meal.ID)
     }
   }
@@ -96,6 +97,11 @@ public struct MealList {
               return response.meals
             }))
           }
+        
+          //@DEDA
+        case .cancelButtonTapped:
+          state.destination = .none
+          return .none
         }
         
       default:
@@ -134,13 +140,19 @@ public struct MealListView: View {
       }
     }
     .task { await send(.task).finish() }
-    .appFontNavigationTitle(store.category.strCategory.appending("s"))
+    .navigationTitle(store.category.strCategory.appending("s"))
     .navigationBarTitleDisplayMode(.inline)
-    .navigationDestination(item: $store.scope(
+    .sheet(item: $store.scope(
       state: \.destination?.mealDetails,
       action: \.destination.mealDetails
     )) { store in
-      MealDetailsView(store: store)
+      NavigationStack {
+        MealDetailsView(store: store).toolbar {
+          Button("Cancel") {
+            send(.cancelButtonTapped)
+          }
+        }
+      }
     }
   }
   
@@ -161,7 +173,6 @@ public struct MealListView: View {
   @MainActor private func rowView(_ row: MealList.State.Row) -> some View {
     Button(action: { send(.navigateToMealDetails(id: row.id)) }) {
       Text(row.meal.strMeal)
-        .appFont(.body)
     }
   }
 }

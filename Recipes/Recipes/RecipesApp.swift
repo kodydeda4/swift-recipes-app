@@ -5,9 +5,6 @@ import SwiftUI
 
 @main
 struct RecipesApp: App {
-  init() {
-    DesignSystem.registerFonts()
-  }
   var body: some Scene {
     WindowGroup {
       if !_XCTIsTesting {

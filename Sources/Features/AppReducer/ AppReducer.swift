@@ -8,20 +8,22 @@ import SwiftUI
 public struct AppReducer {
   @ObservableState
   public struct State: Equatable {
-    var mealCategories = IdentifiedArrayOf<ApiClient.MealCategory>()
-    @Presents var destination: Destination.State?
-
+    var recipes = Recipes.State()
+    var destinationTag: DestinationTag? = .recipes
+    
+    public enum DestinationTag: String, Equatable, CaseIterable {
+      case recipes = "Recipes"
+    }
+    
     public init() {}
   }
   
   public enum Action: ViewAction {
     case view(View)
-    case destination(PresentationAction<Destination.Action>)
-    case fetchAllMealCategoriesResponse(Result<[ApiClient.MealCategory], Error>)
+    case recipes(Recipes.Action)
     
-    public enum View {
-      case onAppear
-      case navigateToMealList(category: ApiClient.MealCategory)
+    public enum View: BindableAction {
+      case binding(BindingAction<State>)
     }
   }
   
@@ -30,40 +32,11 @@ public struct AppReducer {
   @Dependency(\.api) var api
   
   public var body: some ReducerOf<Self> {
-    Reduce { state, action in
-      switch action {
-        
-      case .view(.onAppear):
-        return .run { send in
-          await send(.fetchAllMealCategoriesResponse(Result {
-            struct Response: Codable {
-              let categories: [ApiClient.MealCategory]
-            }
-            let response: Response = try await self.api.request(.fetchAllMealCategories())
-            return response.categories
-          }))
-        }
-        
-      case let .view(.navigateToMealList(category: value)):
-        state.destination = .mealList(MealList.State(category: value))
-        return .none
-
-      case let .fetchAllMealCategoriesResponse(.success(value)):
-        state.mealCategories = .init(uniqueElements: value)
-        return .none
-        
-      default:
-        return .none
-      }
-    }
-    .ifLet(\.$destination, action: \.destination)
-  }
-  
-  @Reducer(state: .equatable)
-  public enum Destination {
-    case mealList(MealList)
+    BindingReducer(action: \.view)
+    Scope(state: \.recipes, action: \.recipes) { Recipes() }
   }
 }
+
 
 // MARK: - SwiftUI
 
@@ -76,27 +49,39 @@ public struct AppView: View {
   }
   
   public var body: some View {
-    NavigationStack {
-      List {
-        ForEach(store.mealCategories) { value in
-          Button {
-            send(.navigateToMealList(category: value))
-          } label: {
-            Text(value.strCategory)
+    NavigationSplitView(
+      columnVisibility: .constant(.all),
+      sidebar: {
+        List(selection: $store.destinationTag) {
+          ForEach(AppReducer.State.DestinationTag.allCases, id: \.self) { value in
+            NavigationLink(value: value) {
+              Text(value.rawValue.capitalized)
+            }
           }
         }
+        .navigationTitle("Sidebar")
+      },
+      content: {
+        switch store.destinationTag {
+        case .recipes:
+          RecipesView(store: store.scope(state: \.recipes, action: \.recipes))
+        case .none:
+          EmptyView()
+        }
+      },
+      detail: {
+        switch store.destinationTag {
+        case .recipes:
+          RecipesDetailView(store: store.scope(state: \.recipes, action: \.recipes))
+        case .none:
+          EmptyView()
+        }
       }
-      .onAppear { send(.onAppear) }
-      .appFontNavigationTitle("App")
-      .navigationDestination(item: $store.scope(
-        state: \.destination?.mealList,
-        action: \.destination.mealList
-      )) { store in
-        MealListView(store: store)
-      }
-    }
+    )
   }
 }
+
+
 
 // MARK: - SwiftUI Previews
 

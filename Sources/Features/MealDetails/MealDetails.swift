@@ -85,24 +85,20 @@ public struct MealDetailsView: View {
               Text(value.strMeasure)
               Text(value.strIngredient)
             }
-            .appFont(.body)
           }
         } label: {
           Text("🛒 Ingredients")
-            .appFont(.body, .semibold)
         }
       }
       Section {
         DisclosureGroup {
           Text(store.meal.strInstructions)
-            .appFont(.body)
         } label: {
           Text("📖 Instructions")
-            .appFont(.body, .semibold)
         }
       }
     }
-    .appFontNavigationTitle(store.meal.strMeal)
+    .navigationTitle(store.meal.strMeal)
     .listStyle(.plain)
     .task { await send(.task).finish() }
   }

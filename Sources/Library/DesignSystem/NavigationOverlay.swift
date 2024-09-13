@@ -39,7 +39,7 @@ extension View {
           .foregroundColor(.secondary)
       }
       .frame(maxWidth: .infinity, maxHeight: .infinity)
-      .appFontNavigationTitle("Preview")
+      .navigationTitle("Preview")
       .navigationOverlay {
         Button("Click me") {
           //...
