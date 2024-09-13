@@ -13,9 +13,9 @@ let package = Package(
     .library(name: "ApiClient"),
 
     // Features
-    .library(name: "AppReducer"),
-    .library(name: "MealDetails"),
-    .library(name: "MealList"),
+    .library(name: "AppFeature"),
+    .library(name: "HomeFeature"),
+    .library(name: "MealDetailsFeature"),
 
     // Libraries
     .library(name: "SharedState"),
@@ -36,15 +36,15 @@ let package = Package(
     .dependency("ApiClient"),
 
     // Features
-    .feature("AppReducer", dependencies: [
+    .feature("AppFeature", dependencies: [
       "ApiClient",
-      "MealList"
+      "HomeFeature"
     ]),
-    .feature("MealList", dependencies: [
+    .feature("HomeFeature", dependencies: [
       "ApiClient",
-      "MealDetails"
+      "MealDetailsFeature"
     ]),
-    .feature("MealDetails", dependencies: [
+    .feature("MealDetailsFeature", dependencies: [
       "ApiClient",
     ]),
 
@@ -60,7 +60,7 @@ let package = Package(
       .product(name: "ComposableArchitecture", package: "swift-composable-architecture"),
       .product(name: "Tagged", package: "swift-tagged"),
     ]),
-    .library("DesignSystem", resources: [.process("Fonts")]),
+    .library("DesignSystem"),
     .library("AsyncHelpers"),
     .library("FoundationExtensions"),
     .library("SwiftUIHelpers"),

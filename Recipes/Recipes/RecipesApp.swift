@@ -1,4 +1,4 @@
-import AppReducer
+import AppFeature
 import ComposableArchitecture
 import DesignSystem
 import SwiftUI
