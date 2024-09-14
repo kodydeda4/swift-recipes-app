@@ -17,7 +17,7 @@ public struct MealDetails {
       case ingredients
     }
     
-    init(
+    public init(
       meal: ApiClient.MealDetails,
       tab: Tab = Tab.instructions
     ) {

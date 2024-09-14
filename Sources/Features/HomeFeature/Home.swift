@@ -3,6 +3,7 @@ import ComposableArchitecture
 import DesignSystem
 import MealDetailsFeature
 import SwiftUI
+import SwiftUIHelpers
 
 @Reducer
 public struct Home {
@@ -166,6 +167,9 @@ public struct HomeView: View {
       Text(value.strCategory)
         .frame(maxWidth: .infinity)
     }
+    .if(value == store.mealCategory) { view in
+      view.tint(.accentColor)
+    }
   }
   
   @MainActor private func rowView(value: Home.State.Row) -> some View {
@@ -178,16 +182,16 @@ public struct HomeView: View {
         } placeholder: {
           ProgressView()
         }
+        .clipShape(RoundedRectangle(cornerRadius: 12))
         
         Text(value.meal.strMeal)
           .multilineTextAlignment(.center)
-          .lineLimit(1)
           .frame(maxWidth: .infinity, maxHeight: .infinity)
       }
       .padding()
       .frame(maxWidth: .infinity, maxHeight: .infinity)
     }
-//    .buttonStyle(.plain)
+    .buttonBorderShape(.roundedRectangle)
   }
 }
 
