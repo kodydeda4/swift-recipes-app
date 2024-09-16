@@ -137,8 +137,9 @@ public struct HomeView: View {
             .padding([.leading, .vertical])
           }
         }
-
-        if !store.rows.isEmpty {
+        if store.rows.isEmpty {
+          Spacer()
+        } else {
           Section {
             ScrollView(showsIndicators: false) {
               LazyVGrid(columns: .init(repeating: .init(.flexible()), count: 6)) {
