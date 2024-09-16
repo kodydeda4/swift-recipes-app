@@ -28,8 +28,8 @@ Features are defined as Reducers, containing State, Actions, and Dependencies. A
 1. `AppReducer`
     * Root reducer of the app. You can add more features here if you like.
 
-2. `MealList`
-    * Feature that fetches & displays a list of meals from the api.
+2. `HomeFeature`
+    * Feature that fetches & displays a list of cateogires & meals from the api.
 
 3. `MealDetails`
     * Feature that displays the details of a meal.
