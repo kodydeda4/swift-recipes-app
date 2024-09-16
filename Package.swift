@@ -27,8 +27,8 @@ let package = Package(
   dependencies: [
     .package(url: "https://github.com/pointfreeco/swift-composable-architecture", from: "1.15.0"),
     .package(url: "https://github.com/pointfreeco/swift-tagged", from: "0.6.0"),
-    .package(url: "https://github.com/tgrapperon/swift-dependencies-additions", from: "1.0.2"),
-    .package(url: "https://github.com/groue/GRDB.swift", from: "6.27.0"),
+//    .package(url: "https://github.com/tgrapperon/swift-dependencies-additions", from: "1.0.2"),
+//    .package(url: "https://github.com/groue/GRDB.swift", from: "6.27.0"),
     .package(url: "https://github.com/gohanlon/swift-memberwise-init-macro", branch: "main"),
   ],
   targets: [
