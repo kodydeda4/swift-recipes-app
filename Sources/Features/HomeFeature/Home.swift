@@ -64,11 +64,19 @@ public struct Home {
         return .none
         
       case let .fetchAllMealCategoriesResponse(result):
-        if case let .success(value) = result {
-          state.mealCategories = .init(uniqueElements: value)
-        }
-        return .none
+        // 1. update on success
+        guard case let .success(value) = result
+        else { return .none }
         
+        state.mealCategories = .init(uniqueElements: value)
+        
+        // 2. set default category if nil
+        guard state.mealCategory == .none,
+              let mealCategory = state.mealCategories.first
+        else { return .none }
+        
+        return .send(.view(.mealCategoryButtonTapped(mealCategory)))
+
       case let .view(action):
         switch action {
           

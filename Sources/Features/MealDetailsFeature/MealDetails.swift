@@ -30,7 +30,6 @@ public struct MealDetails {
     case view(View)
     
     public enum View: BindableAction {
-      case task
       case binding(BindingAction<State>)
     }
   }
@@ -79,16 +78,6 @@ public struct MealDetailsView: View {
     }
     .navigationTitle(store.meal.strMeal)
     .listStyle(.plain)
-    .task { await send(.task).finish() }
-    .toolbar {
-      Menu {
-        Button("Save") {
-          
-        }
-      } label: {
-        Image(systemName: "ellipsis")
-      }
-    }
   }
   
   @MainActor private var content: some View {
