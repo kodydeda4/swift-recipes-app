@@ -66,6 +66,7 @@ public struct Home {
       case let .fetchAllMealCategoriesResponse(result):
         if case let .success(value) = result {
           state.mealCategories = .init(uniqueElements: value)
+          state.mealCategory = state.mealCategories.first
         }
         return .none
         
