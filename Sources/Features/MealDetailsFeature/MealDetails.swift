@@ -40,22 +40,6 @@ public struct MealDetails {
   
   public var body: some ReducerOf<Self> {
     BindingReducer(action: \.view)
-    Reduce { state, action in
-      switch action {
-        
-      case let .view(action):
-        switch action {
-          
-        case .task:
-          print(state.meal)
-          return .none
-          
-        case .binding:
-          return .none
-          
-        }
-      }
-    }
   }
 }
 
