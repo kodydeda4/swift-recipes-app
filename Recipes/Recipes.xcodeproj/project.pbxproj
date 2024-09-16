@@ -7,7 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		332470F32C94935B003363E9 /* AppReducer in Frameworks */ = {isa = PBXBuildFile; productRef = 332470F22C94935B003363E9 /* AppReducer */; };
+		33276EA02C94C9370082A125 /* AppFeature in Frameworks */ = {isa = PBXBuildFile; productRef = 33276E9F2C94C9370082A125 /* AppFeature */; };
 		333C92852C9491CA00E94514 /* RecipesApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 333C92842C9491CA00E94514 /* RecipesApp.swift */; };
 		333C92892C9491CB00E94514 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 333C92882C9491CB00E94514 /* Assets.xcassets */; };
 		333C928D2C9491CB00E94514 /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 333C928C2C9491CB00E94514 /* Preview Assets.xcassets */; };
@@ -27,7 +27,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				332470F32C94935B003363E9 /* AppReducer in Frameworks */,
+				33276EA02C94C9370082A125 /* AppFeature in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -95,7 +95,7 @@
 			);
 			name = Recipes;
 			packageProductDependencies = (
-				332470F22C94935B003363E9 /* AppReducer */,
+				33276E9F2C94C9370082A125 /* AppFeature */,
 			);
 			productName = Recipes;
 			productReference = 333C92812C9491CA00E94514 /* Recipes.app */;
@@ -303,11 +303,11 @@
 				PRODUCT_BUNDLE_IDENTIFIER = com.deda.Recipes;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SDKROOT = auto;
-				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
+				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator xros xrsimulator";
 				SUPPORTS_MACCATALYST = NO;
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_VERSION = 5.0;
-				TARGETED_DEVICE_FAMILY = "1,2";
+				TARGETED_DEVICE_FAMILY = "1,2,7";
 			};
 			name = Debug;
 		};
@@ -342,11 +342,11 @@
 				PRODUCT_BUNDLE_IDENTIFIER = com.deda.Recipes;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SDKROOT = auto;
-				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
+				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator xros xrsimulator";
 				SUPPORTS_MACCATALYST = NO;
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_VERSION = 5.0;
-				TARGETED_DEVICE_FAMILY = "1,2";
+				TARGETED_DEVICE_FAMILY = "1,2,7";
 			};
 			name = Release;
 		};
@@ -374,9 +374,9 @@
 /* End XCConfigurationList section */
 
 /* Begin XCSwiftPackageProductDependency section */
-		332470F22C94935B003363E9 /* AppReducer */ = {
+		33276E9F2C94C9370082A125 /* AppFeature */ = {
 			isa = XCSwiftPackageProductDependency;
-			productName = AppReducer;
+			productName = AppFeature;
 		};
 /* End XCSwiftPackageProductDependency section */
 	};

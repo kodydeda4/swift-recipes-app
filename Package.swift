@@ -6,16 +6,16 @@ let package = Package(
   name: "swift-recipes-app",
   platforms: [
     .iOS(.v17),
-//    .visionOS(.v1)
+    .visionOS(.v1)
   ],
   products: [
     // Dependencies
     .library(name: "ApiClient"),
-    
+
     // Features
-    .library(name: "AppReducer"),
-    .library(name: "MealDetails"),
-    .library(name: "MealList"),
+    .library(name: "AppFeature"),
+    .library(name: "HomeFeature"),
+    .library(name: "MealDetailsFeature"),
 
     // Libraries
     .library(name: "SharedState"),
@@ -25,26 +25,26 @@ let package = Package(
     .library(name: "FoundationExtensions"),
   ],
   dependencies: [
-    .package(url: "https://github.com/pointfreeco/swift-composable-architecture", from: "1.11.2"),
+    .package(url: "https://github.com/pointfreeco/swift-composable-architecture", from: "1.15.0"),
     .package(url: "https://github.com/pointfreeco/swift-tagged", from: "0.6.0"),
-    .package(url: "https://github.com/tgrapperon/swift-dependencies-additions", from: "1.0.2"),
-    .package(url: "https://github.com/groue/GRDB.swift", from: "6.27.0"),
+//    .package(url: "https://github.com/tgrapperon/swift-dependencies-additions", from: "1.0.2"),
+//    .package(url: "https://github.com/groue/GRDB.swift", from: "6.27.0"),
     .package(url: "https://github.com/gohanlon/swift-memberwise-init-macro", branch: "main"),
   ],
   targets: [
     // Dependencies
     .dependency("ApiClient"),
-    
+
     // Features
-    .feature("AppReducer", dependencies: [
+    .feature("AppFeature", dependencies: [
       "ApiClient",
-      "MealList"
+      "HomeFeature"
     ]),
-    .feature("MealList", dependencies: [
+    .feature("HomeFeature", dependencies: [
       "ApiClient",
-      "MealDetails"
+      "MealDetailsFeature"
     ]),
-    .feature("MealDetails", dependencies: [
+    .feature("MealDetailsFeature", dependencies: [
       "ApiClient",
     ]),
 
@@ -60,7 +60,7 @@ let package = Package(
       .product(name: "ComposableArchitecture", package: "swift-composable-architecture"),
       .product(name: "Tagged", package: "swift-tagged"),
     ]),
-    .library("DesignSystem", resources: [.process("Fonts")]),
+    .library("DesignSystem"),
     .library("AsyncHelpers"),
     .library("FoundationExtensions"),
     .library("SwiftUIHelpers"),
@@ -70,7 +70,7 @@ let package = Package(
 // MARK: - Helpers
 
 extension Product {
-  
+
   /// Create a library with identical name & target.
   static func library(name: String) -> Product {
     .library(name: name, targets: [name])
@@ -78,7 +78,7 @@ extension Product {
 }
 
 extension Target {
-  
+
   /// Create a target with the default path & dependencies for a feature.
   static func feature(_ name: String, dependencies: [Target.Dependency] = []) -> Target {
     .target(
@@ -93,7 +93,7 @@ extension Target {
       path: "Sources/Features/\(name)"
     )
   }
-  
+
   /// Create a target with the default path & dependencies for a dependency.
   static func dependency(_ name: String, dependencies: [Target.Dependency] = []) -> Target {
     .target(
@@ -106,7 +106,7 @@ extension Target {
       path: "Sources/DependencyClients/\(name)"
     )
   }
-  
+
   /// Create a target with the default path & dependencies for a library.
   static func library(
     _ name: String,
