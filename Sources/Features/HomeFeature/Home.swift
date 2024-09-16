@@ -178,17 +178,24 @@ public struct HomeView: View {
     } label: {
       VStack(alignment: .leading) {
         AsyncImage(url: URL(string: value.meal.strMealThumb)) {
-          $0.resizable().scaledToFit().frame(height: 100)
+          $0.resizable().scaledToFill()
         } placeholder: {
           ProgressView()
         }
+        .frame(maxWidth: .infinity, maxHeight: .infinity)
+        .clipped()
+        .frame(width: 120, height: 120)
         .clipShape(RoundedRectangle(cornerRadius: 12))
-        
+        .frame(maxWidth: .infinity)
+
         Text(value.meal.strMeal)
           .multilineTextAlignment(.center)
           .frame(maxWidth: .infinity, maxHeight: .infinity)
+          .lineLimit(2)
+          .frame(height: 60)
+        
       }
-      .padding()
+      .padding(8)
       .frame(maxWidth: .infinity, maxHeight: .infinity)
     }
     .buttonBorderShape(.roundedRectangle)

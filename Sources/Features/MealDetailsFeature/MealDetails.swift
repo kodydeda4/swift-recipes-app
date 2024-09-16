@@ -127,7 +127,7 @@ public struct MealDetailsView: View {
       
       Spacer()
 
-      Picker("@DEDA", selection: $store.tab) {
+      Picker("Tag", selection: $store.tab) {
         ForEach(MealDetails.State.Tab.allCases) { value in
           Text(value.description).tag(value)
         }
